@@ -90,4 +90,5 @@ class Server:
             "prev_page": prev_page,
             "total_pages": total_pages
         }
-        return new_dict
+        return new_dict2-hypermedia_pagination.py
+
