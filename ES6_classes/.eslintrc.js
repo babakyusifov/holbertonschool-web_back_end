@@ -9,9 +9,8 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    // Jest pluginindən qaynaqlanan xətanı aradan qaldırmaq üçün bu qaydanı deaktiv et
-    'jest/no-large-snapshots': 'off',
-    // _ prefix-lərdən ESLint qınamasın deyə
-    'no-underscore-dangle': 'off',
+    // İstəsən buraya öz qaydalarını əlavə edə bilərsən
+    'no-underscore-dangle': 'off',  // _ prefiksi üçün misal
   },
 };
+
