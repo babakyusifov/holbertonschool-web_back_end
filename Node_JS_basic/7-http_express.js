@@ -1,32 +1,22 @@
-const fs = require('fs');
+const express = require('express');
+const countStudents = require('./3-read_file_async');
 
-function countStudents(path) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, 'utf-8', (err, data) => {
-      if (err) {
-        reject(new Error('Cannot load the database'));
-        return;
-      }
+const app = express();
+const PORT = 1245;
 
-      const lines = data.split('\n').filter((line) => line.trim() !== '');
-      const students = lines.slice(1);
-      const fields = {};
-      for (const student of students) {
-        const parts = student.split(',');
-        const firstName = parts[0];
-        const field = parts[parts.length - 1];
-        if (!fields[field]) fields[field] = [];
-        fields[field].push(firstName);
-      }
+app.get('/', (req, res) => {
+  res.send('Hello Holberton School!');
+});
 
-      let output = `Number of students: ${students.length}`;
-      for (const [field, names] of Object.entries(fields)) {
-        output += `\nNumber of students in ${field}: ${names.length}. List: ${names.join(', ')}`;
-      }
+app.get('/students', async (req, res) => {
+  try {
+    const result = await countStudents('database.csv');
+    res.status(200).send(`This is the list of our students\n${result}`);
+  } catch (err) {
+    res.status(500).send('Cannot load the database');
+  }
+});
 
-      resolve(output);
-    });
-  });
-}
+app.listen(PORT);
 
-module.exports = countStudents;
+module.exports = app;
