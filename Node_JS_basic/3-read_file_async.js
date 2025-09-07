@@ -25,7 +25,7 @@ function countStudents(path) {
         output += `\nNumber of students in ${field}: ${names.length}. List: ${names.join(', ')}`;
       }
 
-      resolve(output); // DİQQƏT: console.log yox, resolve
+      resolve(output);
     });
   });
 }
