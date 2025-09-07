@@ -1,22 +1,24 @@
 const express = require('express');
 const countStudents = require('./3-read_file_async');
 
+const database = process.argv[2];
+const port = 1245;
 const app = express();
-const PORT = 1245;
+module.exports = app;
 
 app.get('/', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
   res.send('Hello Holberton School!');
 });
 
-app.get('/students', async (req, res) => {
-  try {
-    const result = await countStudents('database.csv');
-    res.status(200).send(`This is the list of our students\n${result}`);
-  } catch (err) {
-    res.status(500).send('Cannot load the database');
-  }
+app.get('/students', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
+  res.write('This is the list of our students\n');
+  countStudents(database).then((data) => {
+    res.end(data.join('\n'));
+  }).catch((error) => {
+    res.end(`${error.message}`);
+  });
 });
 
-app.listen(PORT);
-module.exports = app;
-
+app.listen(port);
