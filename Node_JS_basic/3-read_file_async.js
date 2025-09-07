@@ -8,35 +8,27 @@ function countStudents(path) {
         return;
       }
 
-      const lines = data.trim().split('\n');
-      lines.shift(); // başlığı at
+      const lines = data.split('\n').filter((line) => line.trim() !== '');
+      const students = lines.slice(1); // skip header
 
-      const students = {};
-      let total = 0;
+      const fields = {};
+      for (const student of students) {
+        const parts = student.split(',');
+        const firstName = parts[0];
+        const field = parts[parts.length - 1];
 
-      for (const line of lines) {
-        if (line.trim() === '') continue;
-        const parts = line.split(',');
-        const firstname = parts[0];
-        const field = parts[3];
-
-        if (field) {
-          if (!students[field]) students[field] = [];
-          students[field].push(firstname);
-          total += 1;
+        if (!fields[field]) {
+          fields[field] = [];
         }
+        fields[field].push(firstName);
       }
 
-      let output = `Number of students: ${total}\n`;
-      console.log(`Number of students: ${total}`);
-
-      for (const [field, list] of Object.entries(students)) {
-        const line = `Number of students in ${field}: ${list.length}. List: ${list.join(', ')}`;
-        console.log(line);
-        output += `${line}\n`;
+      console.log(`Number of students: ${students.length}`);
+      for (const [field, names] of Object.entries(fields)) {
+        console.log(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`);
       }
 
-      resolve(output.trim()); // string-i qaytar
+      resolve();
     });
   });
 }
