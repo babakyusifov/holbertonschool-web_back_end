@@ -1,28 +1,32 @@
-const express = require('express');
-const countStudents = require('./3-read_file_async');
+const fs = require('fs');
 
-const app = express();
-const dbFile = process.argv[2]; // database.csv fayl adı
+function countStudents(path) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, 'utf-8', (err, data) => {
+      if (err) {
+        reject(new Error('Cannot load the database'));
+        return;
+      }
 
-app.get('/', (req, res) => {
-  res.send('Hello Holberton School!');
-});
+      const lines = data.split('\n').filter((line) => line.trim() !== '');
+      const students = lines.slice(1);
+      const fields = {};
+      for (const student of students) {
+        const parts = student.split(',');
+        const firstName = parts[0];
+        const field = parts[parts.length - 1];
+        if (!fields[field]) fields[field] = [];
+        fields[field].push(firstName);
+      }
 
-app.get('/students', (req, res) => {
-  res.write('This is the list of our students\n');
+      let output = `Number of students: ${students.length}`;
+      for (const [field, names] of Object.entries(fields)) {
+        output += `\nNumber of students in ${field}: ${names.length}. List: ${names.join(', ')}`;
+      }
 
-  countStudents(dbFile)
-    .then((content) => {
-      res.write(content);
-      res.end();
-    })
-    .catch(() => {
-      // Error baş verəndə də tələb olunan formatda göndər
-      res.write('Cannot load the database');
-      res.end();
+      resolve(output);
     });
-});
+  });
+}
 
-app.listen(1245);
-
-module.exports = app;
+module.exports = countStudents;
